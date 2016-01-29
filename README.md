@@ -2,9 +2,6 @@
 ### What is this?
 These are exercises to help us practice and discuss software as a craft.
 
-### Kata Catalog
-- [Bank OCR](https://github.com/pivotal/code-kata-bank-ocr)
-
 #### Resources
 - [Gilded Rose](https://github.com/jimweirich/gilded_rose_kata)
 - [CodingDojo](http://codingdojo.org/)
