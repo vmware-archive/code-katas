@@ -4,10 +4,13 @@ class BankOcr
   end
 
   def account_number
-    @lines = @text.split("\n")
-    @characters = @lines.map(&:chars)
-    @grouped = @characters.map { |c| c.each_slice(3).to_a }.transpose.map { |num| num[0..-2].flatten }
-    @numbers = @grouped.map do |num|
+    characters = @text
+                  .split("\n")
+                  .map(&:chars)
+                  .map { |c| c.each_slice(3).to_a }
+                  .transpose.map(&:flatten)
+
+    numbers = characters.map do |num|
       case num
         when zero
           '0'
@@ -34,58 +37,58 @@ class BankOcr
       end
     end
 
-    @illegal = false
-    @error = false
+    illegal = false
+    error = false
 
-    if @numbers.include?('?')
-      @illegal = true
+    if numbers.include?('?')
+      illegal = true
     else
-      @checksum = @numbers.reverse.each_with_index.reduce(0) { |acc, (num, idx)| acc + (idx + 1) * num.to_i } % 11
-      if @checksum != 0
-        @error = true
+      checksum = numbers.reverse.each_with_index.reduce(0) { |acc, (num, idx)| acc + (idx + 1) * num.to_i } % 11
+      if checksum != 0
+        error = true
       end
     end
 
-    if @illegal || @error
-      @differences = {}
-      @grouped.each_with_index do |group, i|
+    if illegal || error
+      differences = {}
+      characters.each_with_index do |group, i|
         all.each_with_index  do |num, j|
           if (0..9).map { |k| group[k] == num[k] ? nil : true }.compact.length == 1
-            @differences[i] ||= []
-            @differences[i] << j
+            differences[i] ||= []
+            differences[i] << j
           end
         end
       end
 
-      if @differences.empty?
-        @numbers.join + ' ILL'
+      if differences.empty?
+        numbers.join + ' ILL'
       else
-        @valid = []
-        @differences.each do |i, arr|
+        valid = []
+        differences.each do |i, arr|
           arr.each do |new|
-            @try = @numbers.dup
-            @try.delete_at(i)
-            @try.insert(i, new.to_s)
-            if @try.include?('?')
+            try = numbers.dup
+            try.delete_at(i)
+            try.insert(i, new.to_s)
+            if try.include?('?')
               next
             else
-              @checksum = @try.reverse.each_with_index.reduce(0) { |acc, (num, idx)| acc + (idx + 1) * num.to_i } % 11
-              if @checksum == 0
-                @valid << @try
+              checksum = try.reverse.each_with_index.reduce(0) { |acc, (num, idx)| acc + (idx + 1) * num.to_i } % 11
+              if checksum == 0
+                valid << try
               end
             end
           end
         end
-        if @valid.length == 0
-          @numbers.join + ' ILL'
-        elsif @valid.length == 1
-          @valid.first.join
+        if valid.length == 0
+          numbers.join + ' ILL'
+        elsif valid.length == 1
+          valid.first.join
         else
-          @numbers.join + ' AMB ' + @valid.map(&:join).to_s
+          numbers.join + ' AMB ' + valid.map(&:join).to_s
         end
       end
     else
-      @numbers.join
+      numbers.join
     end
   end
 
