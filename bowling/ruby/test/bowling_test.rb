@@ -33,7 +33,7 @@ describe Bowling do
     game.roll(3)
     game.roll(7)
     game.roll(6)
-    game.score.must_equal((3 + 7 + 6) + 6)
+    game.score.must_equal((3 + 7 + 6) + (6))
   end
 
   it 'correctly calculates one strike' do
@@ -47,10 +47,12 @@ describe Bowling do
   it 'correctly calculates a perfect game' do
     game = Bowling.new
 
-    11.times do
+    9.times do
       game.roll(10)
     end
 
+    game.roll(10)
+    game.roll(10)
     game.roll(10)
     game.score.must_equal(300)
   end
