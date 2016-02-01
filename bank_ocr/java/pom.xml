@@ -5,8 +5,6 @@
   <artifactId>bank-ocr</artifactId>
   <packaging>jar</packaging>
   <version>1.0</version>
-  <name>bank-ocr</name>
-  <url>http://maven.apache.org</url>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>

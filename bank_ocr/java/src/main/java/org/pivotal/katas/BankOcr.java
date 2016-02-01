@@ -7,10 +7,6 @@ public class BankOcr {
     this.accountNumber = accountNumber;
   }
 
-  public static void main(String[] args) {
-
-  }
-
   public String accountNumber() {
     return "";
   }
